@@ -298,14 +298,16 @@ export function initOrbit(root, opts = {}){
   pop.addEventListener('pointerleave', () => { overPop = false; softClose(); });
   // touch / pen: tap a planet to open, tap empty space to close
   let down = null;
-  root.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY, performance.now()]; }, { passive: true });
+  let lastType = 'mouse';
+  root.addEventListener('pointerdown', e => { lastType = e.pointerType; down = [e.clientX, e.clientY, performance.now()]; }, { passive: true });
   root.addEventListener('pointerup', e => {
     if (!down || e.pointerType === 'mouse') return;
     const [x0, y0, t0] = down; down = null; if (Math.hypot(e.clientX - x0, e.clientY - y0) > 10 || performance.now() - t0 > 500) return;
     if (pop.contains(e.target) || dotsEl.contains(e.target) || e.target.closest('a,button')) return;
     const [x, y] = local(e); const i = pick(x, y); if (i >= 0) open(i, true); else close();
   });
-  root.addEventListener('click', e => { if (dotsEl.contains(e.target) || pop.contains(e.target)) return; if (pinned && hover < 0) close(); });
+  // mouse only: on touch the tap's own click would close the card pointerup just opened (touch closes in pointerup instead)
+  root.addEventListener('click', e => { if (lastType !== 'mouse' || dotsEl.contains(e.target) || pop.contains(e.target)) return; if (pinned && hover < 0) close(); });
   addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
 
   /* ---------- card placement: on the planet's outer side, leader with one elbow ---------- */
