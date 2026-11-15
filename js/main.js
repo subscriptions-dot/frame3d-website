@@ -9,7 +9,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
-import { initOrbit } from './orbit-hero.js';
+import { initOrbit } from './orbit-hero.js?v=20261115191230';
 
 const F = window.F3D, reduce = F.reduce;
 const $ = s => document.querySelector(s);
@@ -23,12 +23,23 @@ ScrollTrigger.config({ ignoreMobileResize: true });   // the phone address bar s
 
 /* ---------------- smooth scroll ---------------- */
 let lenis = null;
-if (!reduce && window.Lenis){
+const touchDev = !matchMedia('(hover: hover)').matches;
+// Touch screens always get the controlled scroll (even with reduce-motion on): otherwise the phone's own fling throws the page to the end in one swipe.
+if (window.Lenis && (!reduce || touchDev)){
   lenis = new Lenis({ lerp: .09, smoothWheel: true, wheelMultiplier: 1, touchMultiplier: .7, syncTouch: true, syncTouchLerp: .07, touchInertiaMultiplier: 6 });   // touch too: page and 3D move in the same frame   // speed follows the wheel, no fixed duration
   lenis.on('scroll', e => { F.vel = e.velocity * 60; F.velT = performance.now(); ScrollTrigger.update(); });
   gsap.ticker.add(t => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
   lenis.stop(); F.lenis = lenis;
+}
+const BUILD = '20261115191230';
+if (/[?&]debug\b/.test(location.search)){   // ?debug: show what this device is running (for phone checks)
+  const dbg = document.createElement('div');
+  dbg.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:999;background:rgba(0,0,0,.8);color:#9ef;font:11px/1.4 monospace;padding:6px 8px;border-radius:6px;pointer-events:none;max-width:90vw';
+  document.body.appendChild(dbg);
+  let fr = 0, t0 = performance.now(), fps = 0;
+  gsap.ticker.add(() => { fr++; const n = performance.now(); if (n - t0 > 500){ fps = Math.round(fr * 1000 / (n - t0)); fr = 0; t0 = n; }
+    dbg.textContent = `build ${BUILD} | lenis ${lenis ? 'on' : 'OFF'} | reduce ${reduce} | touch ${touchDev} | fps ${fps} | y ${Math.round(scrollY)} | ${navigator.userAgent.replace(/^.*?\) /, '').slice(0, 60)}`; });
 }
 const scrollToEl = (t, dur = 1.6) => lenis ? lenis.scrollTo(t, { duration: dur, easing: easeIO }) : (typeof t === 'number' ? scrollTo(0, t) : t.scrollIntoView());
 document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => { const t = document.querySelector(a.getAttribute('href')); if (t){ e.preventDefault(); scrollToEl(t); } }));
