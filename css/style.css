@@ -227,7 +227,7 @@ main{overflow-x:clip}
 .get::before{content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(90deg, var(--g1), var(--g2), var(--g3)); transform:translateY(101%); transition:transform .5s var(--e1); border-radius:inherit}
 .get:hover{color:var(--paper)} .get:hover::before{transform:none}
 .stickers{position:absolute; inset:0; pointer-events:none}
-.stk{position:absolute; left:50%; top:50%; width:clamp(60px, 7.5vw, 124px); filter:drop-shadow(0 10px 18px rgba(0,0,0,.45)); will-change:transform}
+.stk{position:absolute; left:50%; top:50%; width:clamp(60px, 7.5vw, 124px); filter:drop-shadow(0 10px 18px rgba(0,0,0,.45)); will-change:transform, translate, rotate}
 .stk svg{width:100%; height:auto; display:block}
 @media (max-width:720px){ .stk{width:46px} }
 

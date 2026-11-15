@@ -123,8 +123,11 @@ function warm(scene, cam){
     scene.traverse(o => { const ms = o.material ? (Array.isArray(o.material) ? o.material : [o.material]) : [];
       ms.forEach(m => { for (const k in m){ const v = m[k]; if (v && v.isTexture) renderer.initTexture(v); }
         if (m.uniforms) for (const k in m.uniforms){ const v = m.uniforms[k].value; if (v && v.isTexture) renderer.initTexture(v); } }); });
+    // compile() skips hidden objects, so show everything for a moment (shards, light core, web) and put it back
+    const hid = []; scene.traverse(o => { if (!o.visible){ hid.push(o); o.visible = true; } });
     renderer.compile(scene, cam);
     const prev = renderer.getRenderTarget(); renderer.setRenderTarget(warmRT); renderer.render(scene, cam); renderer.setRenderTarget(prev);
+    hid.forEach(o => o.visible = false);
   } catch (e){ console.warn(e); }
 }
 const envTex = pmrem.fromScene(new RoomEnvironment(renderer), .04).texture;
@@ -585,13 +588,15 @@ function burst(on){
 }
 ScrollTrigger.create({ trigger: '#get', start: 'top 20%', end: 'bottom 60%', onToggle: s => burst(s.isActive) });
 const stkPos = stks.map(() => ({ x: 0, y: 0 }));
+// only work while the finale is near the screen; move with `translate` (no layout), never left/top
+let stkNear = false; ScrollTrigger.create({ trigger: '#get', start: 'top bottom', end: 'bottom top', onToggle: s => stkNear = s.isActive });
 gsap.ticker.add(() => {
+  if (!stkNear && !stkShown) return;
   const W = innerWidth, H = innerHeight;
   stks.forEach((s, i) => { const d = +s.dataset.d, o = stkPos[i], tx = stkShown ? s.dataset.x * W + F.mouse.nx * 24 * d : 0, ty = stkShown ? s.dataset.y * H - F.mouse.ny * 18 * d : 0;
     const nar = W < 720; const tx2 = nar ? Math.sign(tx) * Math.max(Math.abs(tx), W * .4) : tx; o.x += (tx2 - o.x) * .08; o.y += (ty - o.y) * .08;
     const tt = performance.now() / 1000, bob = stkShown ? Math.sin(tt * (.7 + d * .5) + i * 1.7) * 10 * d : 0, lean = stkShown ? Math.max(-14, Math.min(14, (F.vel || 0) / 120)) * d : 0;
-    s.style.left = `calc(50% + ${o.x.toFixed(1)}px)`; s.style.top = `calc(50% + ${(o.y + bob - lean).toFixed(1)}px)`;
-    s.style.translate = `0 0`; s.style.rotate = stkShown ? `${(Math.sin(tt * .6 + i) * 4 * d).toFixed(2)}deg` : '0deg'; });
+    s.style.translate = `${o.x.toFixed(1)}px ${(o.y + bob - lean).toFixed(1)}px`; s.style.rotate = stkShown ? `${(Math.sin(tt * .6 + i) * 4 * d).toFixed(2)}deg` : '0deg'; });
 });
 if (reduce) burst(true);
 
