@@ -90,7 +90,10 @@ main{overflow-x:clip}
 .menu-open .menu{clip-path:circle(150% at calc(100% - 60px) 40px); visibility:visible}
 .menu ul{list-style:none; margin:0; padding:0; display:grid; gap:4px}
 .menu li{overflow:hidden}
-.menu a{display:inline-block; font-family:var(--display); font-weight:300; font-size:clamp(44px, 9vw, 112px); line-height:1.05; letter-spacing:-.04em; transform:translateY(110%); transition:transform .8s var(--e1)}
+.menu-pages{display:flex; flex-wrap:wrap; gap:8px; margin-top:28px}
+.menu .menu-pages a{font-family:var(--body); font-size:15px; font-weight:500; letter-spacing:0; line-height:1; padding:12px 18px; border-radius:999px; background:rgba(255,255,255,.08); transform:none}
+.menu .menu-pages a:hover{background:rgba(255,255,255,.18)}
+.menu ul a{display:inline-block; font-family:var(--display); font-weight:300; font-size:clamp(44px, 9vw, 112px); line-height:1.05; letter-spacing:-.04em; transform:translateY(110%); transition:transform .8s var(--e1)}
 .menu-open .menu a{transform:none; transition-delay:calc(.15s + var(--i) * 60ms)}
 .menu .mono{color:var(--mute-night); margin-top:32px}
 @media (max-width:560px){ .hdr .pill.get-top{display:none} }
@@ -248,6 +251,10 @@ footer{position:relative; z-index:3; background:var(--paper); color:var(--ink); 
 .wordmark .l i:first-child{background:linear-gradient(180deg, var(--ink), #8A94A8); -webkit-background-clip:text; background-clip:text; color:transparent}
 .wordmark .l i:last-child{position:absolute; left:0; top:100%; background:linear-gradient(180deg, var(--g1), var(--g3)); -webkit-background-clip:text; background-clip:text; color:transparent}
 .wordmark:hover .l i{transform:translateY(-100%)}
+.f-social{display:flex; gap:8px; margin-top:28px}
+.f-social a{width:44px; height:44px; border-radius:50%; display:grid; place-items:center; background:var(--ground); color:var(--ink); transition:background .3s var(--e1), color .3s var(--e1)}
+.f-social a:hover{background:var(--ink); color:var(--paper)}
+.f-social svg{width:20px; height:20px}
 .f-bottom{display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-top:24px; color:var(--ink-3)}
 .to-top{width:44px; height:44px; border-radius:50%; background:var(--ink); color:var(--paper); display:grid; place-items:center}
 .to-top svg{width:16px; height:16px; transition:transform .45s var(--e2)} .to-top:hover svg{transform:translateY(-3px)}
