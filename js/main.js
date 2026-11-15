@@ -24,7 +24,7 @@ ScrollTrigger.config({ ignoreMobileResize: true });   // the phone address bar s
 /* ---------------- smooth scroll ---------------- */
 let lenis = null;
 if (!reduce && window.Lenis){
-  lenis = new Lenis({ lerp: .09, smoothWheel: true, wheelMultiplier: 1, touchMultiplier: 1, syncTouch: true, syncTouchLerp: .08, touchInertiaMultiplier: 10 });   // touch too: page and 3D move in the same frame   // speed follows the wheel, no fixed duration
+  lenis = new Lenis({ lerp: .09, smoothWheel: true, wheelMultiplier: 1, touchMultiplier: .7, syncTouch: true, syncTouchLerp: .07, touchInertiaMultiplier: 6 });   // touch too: page and 3D move in the same frame   // speed follows the wheel, no fixed duration
   lenis.on('scroll', e => { F.vel = e.velocity * 60; F.velT = performance.now(); ScrollTrigger.update(); });
   gsap.ticker.add(t => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
