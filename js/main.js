@@ -19,11 +19,12 @@ const ease = t => 1 - Math.pow(1 - t, 3);
 const easeIO = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const rnd = (a, b) => a + Math.random() * (b - a);
 gsap.registerPlugin(ScrollTrigger);
+ScrollTrigger.config({ ignoreMobileResize: true });   // the phone address bar showing/hiding must not re-measure the page mid-scroll
 
 /* ---------------- smooth scroll ---------------- */
 let lenis = null;
 if (!reduce && window.Lenis){
-  lenis = new Lenis({ lerp: .09, smoothWheel: true, wheelMultiplier: 1, touchMultiplier: 1.4 });   // speed follows the wheel, no fixed duration
+  lenis = new Lenis({ lerp: .09, smoothWheel: true, wheelMultiplier: 1, touchMultiplier: 1.4, syncTouch: true, syncTouchLerp: .085, touchInertiaMultiplier: 28 });   // touch too: page and 3D move in the same frame   // speed follows the wheel, no fixed duration
   lenis.on('scroll', e => { F.vel = e.velocity * 60; F.velT = performance.now(); ScrollTrigger.update(); });
   gsap.ticker.add(t => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
@@ -38,7 +39,7 @@ ScrollTrigger.create({ start: 0, end: 'max', onUpdate: self => { const y = self.
 /* ---------------- renderer + views ---------------- */
 const canvas = $('#gl');
 const mobile = !matchMedia('(hover: hover)').matches || innerWidth < 720;
-const PR = Math.min(devicePixelRatio, mobile ? 1.25 : 1.5);
+let PR = Math.min(devicePixelRatio, mobile ? 1 : 1.5);
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
 renderer.setPixelRatio(PR); renderer.setSize(innerWidth, innerHeight, false);
 renderer.toneMapping = THREE.NoToneMapping; renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -52,7 +53,7 @@ class ViewsPass extends Pass {
     r.setRenderTarget(readBuffer); r.setClearColor(clearCol, 1); r.clear();
     const H = innerHeight, ac = r.autoClear; r.autoClear = false;   // views share one buffer: never wipe it per view
     for (const v of views){
-      if (!v.visible || !v.ready) continue;
+      if (!v.on) continue;
       const b = v.rect, x = b.left * PR, y = (H - b.bottom) * PR, w = b.width * PR, h = b.height * PR;
       const cx = Math.max(0, x), cy = Math.max(0, y), cw = Math.min(readBuffer.width, x + w) - cx, ch = Math.min(readBuffer.height, y + h) - cy;
       if (cw <= 0 || ch <= 0) continue;
@@ -79,7 +80,7 @@ const ca = new ShaderPass({ uniforms: { tDiffuse: { value: null }, uAmt: { value
       gl_FragColor = vec4(texture2D(tDiffuse, a).r, texture2D(tDiffuse, vUv).g, texture2D(tDiffuse, b).b, 1.); }` });
 ca.enabled = false; composer.addPass(ca);
 composer.addPass(new OutputPass());
-if (!mobile) composer.addPass(new SMAAPass(innerWidth * PR, innerHeight * PR));
+const smaa = mobile ? null : new SMAAPass(innerWidth * PR, innerHeight * PR); if (smaa) composer.addPass(smaa);
 const grain = new ShaderPass({
   uniforms: { tDiffuse: { value: null }, uTime: { value: 0 }, uAmt: { value: .04 } },
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }',
@@ -102,7 +103,7 @@ function finishLoader(){
   setTimeout(() => {
     gsap.ticker.remove(loTick); loN.textContent = '100'; loBar.style.transform = 'scaleX(1)';
     // compile every shader and upload the corridor once now, so nothing hitches when a section first appears
-    try { views.forEach(v => renderer.compile(v.scene, v.camera)); renderer.compile(tunScene, tunCam); renderer.compile(tunLogo, tunCam); renderTunnel(screenRT); } catch (e){ console.warn(e); }
+    views.forEach(v => { warm(v.scene, v.camera); if (v.after) warm(v.after, v.camera); }); warm(tunScene, tunCam); warm(tunLogo, tunCam); try { renderTunnel(screenRT); } catch (e){ console.warn(e); }
     $('#loader').classList.add('done'); lenis && lenis.start(); scrollTo(0, 0);
     setTimeout(() => orbit.start(), 350);
     setTimeout(() => loadShatter(), 600);   // the two heavy models (4 MB) come in behind the banner
@@ -115,6 +116,17 @@ setTimeout(finishLoader, 9000);
 const texLoader = new THREE.TextureLoader(manager), lazyGltf = new GLTFLoader();
 const tex = url => { const t = texLoader.load(url); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; };
 const pmrem = new THREE.PMREMGenerator(renderer);
+// Upload every texture and shader of a scene once, off screen, so the first time a section scrolls in it does not stall.
+const warmRT = new THREE.WebGLRenderTarget(64, 64);
+function warm(scene, cam){
+  try {
+    scene.traverse(o => { const ms = o.material ? (Array.isArray(o.material) ? o.material : [o.material]) : [];
+      ms.forEach(m => { for (const k in m){ const v = m[k]; if (v && v.isTexture) renderer.initTexture(v); }
+        if (m.uniforms) for (const k in m.uniforms){ const v = m.uniforms[k].value; if (v && v.isTexture) renderer.initTexture(v); } }); });
+    renderer.compile(scene, cam);
+    const prev = renderer.getRenderTarget(); renderer.setRenderTarget(warmRT); renderer.render(scene, cam); renderer.setRenderTarget(prev);
+  } catch (e){ console.warn(e); }
+}
 const envTex = pmrem.fromScene(new RoomEnvironment(renderer), .04).texture;
 
 function gradMat(c0, c1, opts = {}){
@@ -135,7 +147,7 @@ function fitCam(cam, rect, baseFov){
 const QUAD = new THREE.PlaneGeometry(2, 2);
 function backdrop(uRect, radius, c0, c1){
   const m = new THREE.ShaderMaterial({
-    uniforms: { uRect, uR: { value: radius * PR }, c0: { value: new THREE.Color(c0) }, c1: { value: new THREE.Color(c1) } },
+    uniforms: { uRect, uR: { value: radius * PR, r: radius }, c0: { value: new THREE.Color(c0) }, c1: { value: new THREE.Color(c1) } },
     depthWrite: false, depthTest: false, transparent: false,   // opaque so it draws first, under the objects
     vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, .999, 1.); }',
     fragmentShader: `uniform vec4 uRect; uniform float uR; uniform vec3 c0, c1; varying vec2 vUv;
@@ -191,6 +203,7 @@ const fullEl = { getBoundingClientRect: () => ({ left: 0, top: 0, right: innerWi
 const reel = { p: 0, s: 0 };
 const reelCard = $('#reel-card'), reelTarget = $('#reel-target'), reelUI = $('#reel-ui'), stCopy = $('.st-copy');
 const reelView = addView(fullEl, reelScene, new THREE.Camera(), function(t, dt){
+  this.vis = () => reelMesh.visible;
   reel.s += (reel.p - reel.s) * Math.min(1, dt * 14);
   const a = reelCard.getBoundingClientRect(), b = reelTarget.getBoundingClientRect();
   const e = reduce ? 1 : easeIO(reel.s);
@@ -413,7 +426,7 @@ function loadShatter(){ lazyGltf.load('assets/models/shatter.gltf.json', g => {
   oof.mixer = new THREE.AnimationMixer(g.scene);
   g.animations.forEach(c => { const a = oof.mixer.clipAction(c); a.setLoop(THREE.LoopOnce); a.clampWhenFinished = true; a.play(); oof.dur = Math.max(oof.dur, c.duration); });
   oof.mixer.setTime(0);
-  try { renderer.compileAsync ? renderer.compileAsync(oofScene, oofCam) : renderer.compile(oofScene, oofCam); } catch (e){} loadQuest();
+  warm(oofScene, oofCam); loadQuest();
 }); }
 const SCR_H = 2 * DISP.y, FILL_Z = SCR_H / 2 / Math.tan(THREE.MathUtils.degToRad(15)), TD = 6, _hv = 2 * TD * Math.tan(THREE.MathUtils.degToRad(17));   // monitor screen is 2 units tall; tunnel camera sees _hv at the mark's depth
 const PULL = 5.7;   // camera distance after pulling out: the monitor fills about three quarters of the height
@@ -551,7 +564,7 @@ function loadQuest(){ lazyGltf.load('assets/models/quest.gltf.json', g => {
   fin.mixer = new THREE.AnimationMixer(g.scene);
   g.animations.forEach(c => { fin.mixer.clipAction(c).play(); fin.dur = Math.max(fin.dur, c.duration); });
   qView.ready = true;
-  try { renderer.compileAsync ? renderer.compileAsync(qScene, qCam) : renderer.compile(qScene, qCam); } catch (e){}
+  warm(qScene, qCam);
 }); }
 ScrollTrigger.create({ trigger: '#get', start: 'top bottom', end: 'bottom bottom', scrub: true, onUpdate: s => fin.p = s.progress });
 let dragging = false, px0 = 0; const qs = $('#quest-stage');
@@ -609,6 +622,7 @@ if (!reduce){
 // Brand ribbons, drawn in WebGL so they pass BEHIND the page text and the cards (DOM sits above the canvas).
 const ribScene = new THREE.Scene();
 const ribView = addView(fullEl, ribScene, new THREE.Camera(), function(){});
+ribView.vis = () => ribScene.children.some(m => m.visible);
 views.splice(views.indexOf(ribView), 1); views.unshift(ribView);      // draw first, under every other view
 function ribbon(host, build){
   const key = host.dataset.ribbon;
@@ -631,7 +645,9 @@ function ribbon(host, build){
         if (a <= 0.) discard;
         gl_FragColor = vec4(mix(c0, c1, smoothstep(0., uLen, along)), a);
       }` });
-  const mesh = new THREE.Mesh(new THREE.BufferGeometry(), mat); mesh.frustumCulled = false; ribScene.add(mesh);
+  const dom = false;
+  const mesh = new THREE.Mesh(new THREE.BufferGeometry(), mat); mesh.frustumCulled = false; mesh.visible = false; if (!dom) ribScene.add(mesh);
+  let dPath = null, dLen = 1;
   const make = () => {
     const w = host.clientWidth, h = host.clientHeight, th = innerWidth < 720 ? 22 : 36, ext = th;   // strip is a bit wider than the line for the round ends
     const P = build(w, h, host);
@@ -639,6 +655,14 @@ function ribbon(host, build){
     for (let i = 0; i < P.length - 1; i++){ const p0 = P[i - 1] || P[i], p1 = P[i], p2 = P[i + 1], p3 = P[i + 2] || p2;
       d += ` C${p1[0] + (p2[0] - p0[0]) / 6},${p1[1] + (p2[1] - p0[1]) / 6} ${p2[0] - (p3[0] - p1[0]) / 6},${p2[1] - (p3[1] - p1[1]) / 6} ${p2[0]},${p2[1]}`; }
     const svgNS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(svgNS, 'svg'), path = document.createElementNS(svgNS, 'path');
+    if (dom){
+      host.innerHTML = ''; host.style.zIndex = '-1';   // behind the section text, above the canvas
+      const gid = 'rg-' + key;
+      host.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><defs><linearGradient id="${gid}" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="${w}" y2="0"><stop offset="0" stop-color="${stops[0]}"/><stop offset="1" stop-color="${stops[1]}"/></linearGradient></defs><path fill="none" stroke="url(#${gid})" stroke-width="${th}" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      dPath = host.querySelector('path'); dPath.setAttribute('d', d); dLen = dPath.getTotalLength();
+      dPath.style.strokeDasharray = `${dLen} ${dLen + th * 2}`; dPath.style.strokeDashoffset = dLen * (1 - U.uProg.value);
+      return;
+    }
     path.setAttribute('d', d); svg.appendChild(path); svg.style.cssText = 'position:absolute;width:0;height:0;visibility:hidden'; document.body.appendChild(svg);
     const L = path.getTotalLength(), N = Math.min(3000, Math.max(800, Math.round(L / 2))), pos = [], aL = [], aS = [], idx = [];
     for (let i = 0; i < N; i++){
@@ -653,11 +677,12 @@ function ribbon(host, build){
     g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('aL', new THREE.Float32BufferAttribute(aL, 1)); g.setAttribute('aS', new THREE.Float32BufferAttribute(aS, 1)); g.setIndex(idx);
     mesh.geometry.dispose(); mesh.geometry = g; U.uLen.value = L; U.uHW.value = th / 2;
   };
+  if (!dom) host.innerHTML = '';
   make();
-  host.innerHTML = '';
-  gsap.ticker.add(() => { const r = host.getBoundingClientRect(); U.uOff.value.set(r.left, r.top); U.uView.value.set(innerWidth, innerHeight); mesh.visible = r.bottom > -200 && r.top < innerHeight + 200; });
-  if (!reduce) ScrollTrigger.create({ trigger: host.parentElement, start: 'top 80%', end: 'bottom 35%', scrub: 1, onUpdate: s => U.uProg.value = s.progress });
-  addEventListener('resize', () => { make(); ScrollTrigger.refresh(); });
+  if (!dom) gsap.ticker.add(() => { const r = host.getBoundingClientRect(); U.uOff.value.set(r.left, r.top); U.uView.value.set(innerWidth, innerHeight); mesh.visible = r.bottom > -200 && r.top < innerHeight + 200; });
+  const setProg = v => { U.uProg.value = v; if (dPath) dPath.style.strokeDashoffset = dLen * (1 - v); };
+  if (!reduce) ScrollTrigger.create({ trigger: host.parentElement, start: 'top 80%', end: 'bottom 35%', scrub: dom ? true : 1, onUpdate: s => setProg(s.progress) });
+  let rw = innerWidth; addEventListener('resize', () => { if (innerWidth === rw) return; rw = innerWidth; make(); ScrollTrigger.refresh(); });   // phone address bar changes only the height: ignore it
 }
 // a: enters from the left edge, makes one loop round the card, then leaves to the right in a long S
 ribbon($('[data-ribbon="a"]'), (w, h, host) => {
@@ -717,6 +742,7 @@ ScrollTrigger.create({ trigger: '#loopbar', start: 'top bottom', end: 'bottom bo
   // spring: the curve builds while you scroll, then settles back with a soft overshoot (not an instant snap)
   let vel = 0, vv = 0, lastT = performance.now();
   addView(fullEl, wScene, wCam, function(){
+    this.vis = () => cards.some(c => c.mesh.visible);
     const W = innerWidth, H = innerHeight;
     wCam.right = W; wCam.bottom = -H; wCam.updateProjectionMatrix();
     const now = performance.now(), dt = Math.min(.05, (now - lastT) / 1000); lastT = now;
@@ -754,10 +780,31 @@ function frame(){
   for (const v of views){
     v.rect = v.el.getBoundingClientRect();
     v.visible = v.rect.bottom > 0 && v.rect.top < innerHeight && v.rect.width > 0;
-    if (v.visible && v.ready) v.update.call(v, t, dt);
+    if (v.visible && v.ready){ v.update.call(v, t, dt); v.on = v.vis ? v.vis() : true; } else v.on = false;
   }
   clearCol.copy(GROUND).lerp(NIGHT, dark.k);
   grain.uniforms.uTime.value = t;
+  if (!views.some(v => v.on)){   // only the plain ground shows: skip bloom, SMAA and grain
+    renderer.setRenderTarget(null); renderer.setClearColor(clearCol, 1); renderer.clear(); return;
+  }
   composer.render(dt);
+  adapt(dt);
 }
-addEventListener('resize', () => { renderer.setSize(innerWidth, innerHeight, false); composer.setSize(innerWidth, innerHeight); bloom.setSize(innerWidth / 2, innerHeight / 2); });
+// Slow machine: step quality down once frames stay slow (SMAA off, pixel ratio 1, then no bloom).
+let qLevel = 0, slowN = 0, sampN = 0;
+function adapt(dt){
+  if (!finished || qLevel >= 2 || document.hidden) return;
+  sampN++; if (dt > 1 / 40) slowN++;
+  if (sampN < 90) return;
+  if (slowN > 45){
+    qLevel++;
+    if (qLevel === 1){ if (smaa) smaa.enabled = false; PR = 1; renderer.setPixelRatio(1); composer.setPixelRatio(1); composer.setSize(innerWidth, innerHeight);
+      views.forEach(v => v.scene.traverse(o => { const u = o.material && o.material.uniforms && o.material.uniforms.uR; if (u && u.r != null) u.value = u.r; })); }
+    else { bloom.enabled = false; grain.enabled = false; }
+  }
+  sampN = slowN = 0;
+}
+// Resize the GL buffers at once when the width changes; height-only changes (phone address bar) wait until scrolling settles.
+let gw = innerWidth, gTo = 0;
+const glSize = () => { renderer.setSize(innerWidth, innerHeight, false); composer.setSize(innerWidth, innerHeight); bloom.setSize(innerWidth / 2, innerHeight / 2); };
+addEventListener('resize', () => { clearTimeout(gTo); if (innerWidth !== gw){ gw = innerWidth; glSize(); } else gTo = setTimeout(glSize, 400); });

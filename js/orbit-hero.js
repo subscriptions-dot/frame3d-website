@@ -82,7 +82,7 @@ export function initOrbit(root, opts = {}){
   if (FAST) root.classList.add('fast');
 
   const canvas = $('.o-gl');
-  const PR = Math.min(devicePixelRatio, fine ? 2 : 1.6);
+  const PR = Math.min(devicePixelRatio, fine ? 2 : 1.25);   // phones: lighter, the banner runs every frame
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
   renderer.setPixelRatio(PR);
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .95;
@@ -226,7 +226,7 @@ export function initOrbit(root, opts = {}){
   const hits = planets.map(p => p.hit);
 
   /* ---------- post: MSAA target so glass edges stay clean ---------- */
-  const rt = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType, samples: 4 });
+  const rt = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType, samples: fine ? 4 : 2 });
   const composer = new EffectComposer(renderer, rt);
   composer.addPass(new RenderPass(scene, cam));
   composer.addPass(new UnrealBloomPass(new THREE.Vector2(256, 256), .7, .5, .7));

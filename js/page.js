@@ -69,7 +69,7 @@
   const wm = document.getElementById('wordmark'), wl = [...wm.children];
   const fit = () => { wm.style.fontSize = '18vw'; const need = wl.reduce((a, l) => a + l.getBoundingClientRect().width, 0);
     const room = wm.clientWidth; if (need > 0) wm.style.fontSize = (parseFloat(getComputedStyle(wm).fontSize) * room / need * .94).toFixed(1) + 'px'; };
-  addEventListener('resize', fit); (document.fonts ? document.fonts.ready : Promise.resolve()).then(fit); fit();
+  let fw = innerWidth; addEventListener('resize', () => { if (innerWidth !== fw){ fw = innerWidth; fit(); } }); (document.fonts ? document.fonts.ready : Promise.resolve()).then(fit); fit();
   // soft wave: letters near the pointer rise, eased every frame, settling back when it leaves
   if (!reduce){
     let px = -1e4, on = false, raf = 0; const lift = wl.map(() => 0);
