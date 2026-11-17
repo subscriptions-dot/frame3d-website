@@ -21,9 +21,12 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0' y1='1' x2='1' y2='0'%3E%3Cstop offset='0' stop-color='%232F80FF'/%3E%3Cstop offset='1' stop-color='%238B3DDF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='12' y='38' width='68' height='68' rx='20' fill='none' stroke='url(%23a)' stroke-width='12'/%3E%3Crect x='46' y='18' width='52' height='52' rx='16' fill='url(%23a)'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500;600&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="css/orbit-hero.css?v=20261115193311">
-<link rel="stylesheet" href="css/style.css?v=20261115193311">
+<script>try{var t=localStorage.getItem("f3d-theme");if(t==="dark")document.documentElement.classList.add("dark")}catch(e){}</script>
+<link rel="stylesheet" href="css/orbit-hero.css?v=20261117131029">
+<link rel="stylesheet" href="css/style.css?v=20261117131029">
 </head>
 <body>
 <canvas id="gl" aria-hidden="true"></canvas>
@@ -55,20 +58,17 @@
     <span class="roll" data-roll>Frame3D</span>
   </a>
   <nav aria-label="Main">
+    <button class="theme-sw" id="theme-btn" type="button" role="switch" aria-checked="false" aria-label="Dark mode"><span class="ts-k"><svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span></button>
     <a class="pill dark hov get-top" href="#get"><span class="roll" data-roll>Get Frame3D</span><span class="dot"></span></a>
     <button class="pill menu-btn hov" id="menu-btn" aria-label="Open menu" aria-expanded="false"><span class="roll" data-roll>Menu</span><span class="dots"><i></i><i></i></span></button>
   </nav>
 </header>
 <div class="menu wrap" id="menu" aria-hidden="true">
-  <ul>
-    <li><a href="#top" style="--i:0">Home</a></li>
-    <li><a href="#statement" style="--i:1">The idea</a></li>
-    <li><a href="#features" style="--i:2">What it does</a></li>
-    <li><a href="#numbers" style="--i:3">Numbers</a></li>
-    <li><a href="#dive-intro" style="--i:4">Out of the frame</a></li>
-    <li><a href="#get" style="--i:5">Put it on</a></li>
-  </ul>
-  <div class="menu-pages"><a href="features.html">Features</a><a href="faq.html">FAQ</a><a href="help.html">Help</a><a href="contact.html">Contact</a><a href="legal.html">Privacy</a></div>
+  <div class="menu-grid">
+    <nav class="menu-col" aria-label="Pages"><span class="mono">Pages</span><ul class="menu-big"><li><a href="#top" style="--i:0"><span class="n">01</span><span class="t">Home</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="features.html" style="--i:1"><span class="n">02</span><span class="t">Features</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="faq.html" style="--i:2"><span class="n">03</span><span class="t">FAQ</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="help.html" style="--i:3"><span class="n">04</span><span class="t">Help &amp; install</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="contact.html" style="--i:4"><span class="n">05</span><span class="t">Contact</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="legal.html#privacy" style="--i:5"><span class="n">06</span><span class="t">Privacy</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li></ul></nav>
+    <nav class="menu-col menu-side" aria-label="On this page"><span class="mono">On this page</span><ul class="menu-small"><li><a href="#statement" style="--i:2">The idea</a></li><li><a href="#features" style="--i:3">What it does</a></li><li><a href="#numbers" style="--i:4">Numbers</a></li><li><a href="#dive-intro" style="--i:5">Out of the frame</a></li><li><a href="#get" style="--i:6">Put it on</a></li></ul>
+      <a class="menu-get" href="help.html#install" style="--i:7">Get Frame3D <span aria-hidden="true">→</span></a></nav>
+  </div>
   <div class="mono plus">Spatial browser for Meta Quest</div>
 </div>
 
@@ -126,37 +126,37 @@
     </div>
     <div class="works">
       <a class="work" href="#get" data-cursor="Get it">
-        <div class="img"><img src="assets/images/car.webp" alt="A red convertible on a coastal road at sunset" loading="lazy"></div>
+        <div class="img"><img src="assets/images/car.webp" srcset="assets/images/car_m.webp 960w, assets/images/car.webp 1600w" sizes="(max-width: 720px) 92vw, 45vw" data-m="assets/images/car_m.webp" alt="A red convertible on a coastal road at sunset" loading="lazy"></div>
         <span class="mono tags">Photos • Pages • Video</span>
         <h3><span class="t">2D → 3D, live</span></h3>
         <p>Frame3D makes a <b>depth map</b> for what you're looking at and gives it <b>a second eye</b>.</p>
       </a>
       <a class="work" href="#get" data-cursor="Get it">
-        <div class="img"><img src="assets/images/galaxy.webp" alt="A starfield seen as a 360° sky" loading="lazy"></div>
+        <div class="img"><img src="assets/images/galaxy.webp" srcset="assets/images/galaxy_m.webp 960w, assets/images/galaxy.webp 1600w" sizes="(max-width: 720px) 92vw, 45vw" data-m="assets/images/galaxy_m.webp" alt="A starfield seen as a 360° sky" loading="lazy"></div>
         <span class="mono tags">VR video</span>
         <h3><span class="t">Plays the way it was filmed</span></h3>
         <p><b>180° and 360°</b> video wrap around you. <b>Side-by-side 3D</b> video shows each eye its own half.</p>
       </a>
       <a class="work" href="#reel" data-cursor="See it">
-        <div class="img"><img src="assets/images/lounge.webp" alt="The Lounge space: a round sofa by a wide sunset window" loading="lazy"></div>
+        <div class="img"><img src="assets/images/lounge.webp" srcset="assets/images/lounge_m.webp 960w, assets/images/lounge.webp 1600w" sizes="(max-width: 720px) 92vw, 45vw" data-m="assets/images/lounge_m.webp" alt="The Lounge space: a round sofa by a wide sunset window" loading="lazy"></div>
         <span class="mono tags">Spaces</span>
         <h3><span class="t">Lounge and Aurora</span></h3>
         <p>Browse inside a <b>calm room</b> or a <b>meadow</b> instead of a grey void.</p>
       </a>
       <a class="work" href="#get" data-cursor="Get it">
-        <div class="img"><img src="assets/images/games.webp" alt="Hands holding a gamepad in front of a floating browser window with a racing game" loading="lazy"></div>
+        <div class="img"><img src="assets/images/games.webp" srcset="assets/images/games_m.webp 960w, assets/images/games.webp 1600w" sizes="(max-width: 720px) 92vw, 45vw" data-m="assets/images/games_m.webp" alt="Hands holding a gamepad in front of a floating browser window with a racing game" loading="lazy"></div>
         <span class="mono tags">Web games</span>
         <h3><span class="t">Play with a pad</span></h3>
         <p>Pair a <b>Bluetooth gamepad</b> or use the <b>Quest controllers</b>. Inside a game, every other button is the game's.</p>
       </a>
       <a class="work" href="#get" data-cursor="Get it">
-        <div class="img"><img src="assets/images/addons.webp" alt="Glossy add-on tiles flying out of a glass browser window on a deep blue-violet backdrop" loading="lazy"></div>
+        <div class="img"><img src="assets/images/addons.webp" srcset="assets/images/addons_m.webp 960w, assets/images/addons.webp 1600w" sizes="(max-width: 720px) 92vw, 45vw" data-m="assets/images/addons_m.webp" alt="Glossy add-on tiles flying out of a glass browser window on a deep blue-violet backdrop" loading="lazy"></div>
         <span class="mono tags">Add-ons</span>
         <h3><span class="t">Your Firefox add-ons</span></h3>
         <p>Install <b>real add-ons and themes</b> from addons.mozilla.org, right in the headset.</p>
       </a>
       <a class="work" href="#get" data-cursor="Get it">
-        <div class="img"><img src="assets/images/voice.webp" alt="A woman in a headset speaking; a glowing microphone sends sound waves to a floating browser window" loading="lazy"></div>
+        <div class="img"><img src="assets/images/voice.webp" srcset="assets/images/voice_m.webp 960w, assets/images/voice.webp 1600w" sizes="(max-width: 720px) 92vw, 45vw" data-m="assets/images/voice_m.webp" alt="A woman in a headset speaking; a glowing microphone sends sound waves to a floating browser window" loading="lazy"></div>
         <span class="mono tags">Hinglish voice</span>
         <h3><span class="t">Just say it</span></h3>
         <p>Search, type or give commands <b>by speaking</b>, in <b>English or Hinglish</b>.</p>
@@ -208,7 +208,7 @@
         <div><div class="mono kicker">Is your web ready for depth?</div><h2 class="h-xl rl" id="fin-h"><span class="line"><span class="li">Put it on.</span></span></h2></div>
         <div class="row">
           <p>Install Frame3D on your Quest and open any page. Browse freely, without sign-ins or tracking.</p>
-          <a class="get" id="get-btn" href="https://github.com/subscriptions-dot/frame3d-releases/releases/latest" target="_blank" rel="noopener" data-cursor="Download">Get Frame3D <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8h11M9 4l4 4-4 4"/></svg></a>
+          <a class="get" id="get-btn" href="help.html#install" data-cursor="Install">Get Frame3D <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8h11M9 4l4 4-4 4"/></svg></a>
         </div>
       </div>
     </div>
@@ -219,7 +219,6 @@
   <div class="f-grid">
     <div><p class="lead">The browser built for your headset.</p></div>
     <div><h4>Explore</h4><ul><li><a href="#statement">The idea</a></li><li><a href="#features">What it does</a></li><li><a href="#numbers">Numbers</a></li></ul></div>
-    <div><h4>Get</h4><ul><li><a href="https://github.com/subscriptions-dot/frame3d-releases/releases/latest" target="_blank" rel="noopener">Latest release</a></li><li><a href="#get">Put it on</a></li></ul></div>
     <div><h4>Pages</h4><ul><li><a href="features.html">Features</a></li><li><a href="faq.html">FAQ</a></li><li><a href="help.html">Help &amp; install</a></li><li><a href="contact.html">Contact</a></li><li><a href="legal.html#privacy">Privacy</a></li></ul></div>
   </div>
   <div class="wordmark" id="wordmark" role="img" aria-label="Frame3D"><span class="l" style="--i:0" aria-hidden="true"><i>F</i><i>F</i></span><span class="l" style="--i:1" aria-hidden="true"><i>r</i><i>r</i></span><span class="l" style="--i:2" aria-hidden="true"><i>a</i><i>a</i></span><span class="l" style="--i:3" aria-hidden="true"><i>m</i><i>m</i></span><span class="l" style="--i:4" aria-hidden="true"><i>e</i><i>e</i></span><span class="l" style="--i:5" aria-hidden="true"><i>3</i><i>3</i></span><span class="l" style="--i:6" aria-hidden="true"><i>D</i><i>D</i></span></div>
@@ -228,9 +227,6 @@
 <!-- social:end -->
   <div class="f-bottom"><span class="mono">© 2026 Frame3D · Not affiliated with or endorsed by Meta. Meta Quest is a trademark of Meta Platforms, Inc.</span><a class="to-top" href="#top" aria-label="Back to top"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 13V3M4 7l4-4 4 4"/></svg></a></div>
 </footer>
-<div class="loopbar wrap" id="loopbar">
-  <div class="row"><div><div class="mono">End of the page</div><h3>Scroll on to fly back into orbit</h3></div><div class="mono plus">Orbit <span class="line"><i id="loop-i"></i></span></div></div>
-</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -241,8 +237,8 @@
   "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
 } }
 </script>
-<script src="js/page.js?v=20261115193311"></script>
+<script src="js/page.js?v=20261117131029"></script>
 
-<script type="module" src="js/main.js?v=20261115193311"></script>
+<script type="module" src="js/main.js?v=20261117131029"></script>
 </body>
 </html>

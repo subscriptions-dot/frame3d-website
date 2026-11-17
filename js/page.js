@@ -25,6 +25,10 @@
 
   if (fine && !reduce){
     document.body.classList.add('has-cursor');
+    // eyes appear on the first move and hide when the pointer leaves the page, so they never sit frozen on screen
+    const curOn = v => document.body.classList.toggle('cursor-on', v);
+    addEventListener('pointermove', () => { if (!document.body.classList.contains('cursor-on')) curOn(true); }, {passive: true});
+    document.documentElement.addEventListener('mouseleave', () => curOn(false)); addEventListener('blur', () => curOn(false));
     const cur = document.querySelector('.cursor'), er = cur.querySelector('.eye.r'), ec = cur.querySelector('.eye.c'), lab = cur.querySelector('.cursor-label');
     const N = 10, trail = [];
     for (let i = 0; i < N; i++){ const d = document.createElement('i'); d.className = 'trail'; d.style.background = i % 2 ? 'var(--eye-c)' : 'var(--eye-r)'; d.style.opacity = (1 - i / N) * .5; document.body.appendChild(d); trail.push({el: d, x: 0, y: 0}); }
@@ -41,6 +45,12 @@
     });
     document.addEventListener('pointerover', e => { const t = e.target.closest('[data-cursor]'); if (t){ cur.classList.add('big'); lab.textContent = t.dataset.cursor; } else cur.classList.remove('big'); });
   }
+
+  // dark / light switch: remembered for every page of the site (same key on the reading pages)
+  const tb = document.getElementById('theme-btn'), root = document.documentElement;
+  const syncTb = () => tb.setAttribute('aria-checked', root.classList.contains('dark'));
+  syncTb();
+  tb.addEventListener('click', () => { const d = root.classList.toggle('dark'); try { localStorage.setItem('f3d-theme', d ? 'dark' : 'light'); } catch (e){} syncTb(); dispatchEvent(new Event('f3d-theme')); });
 
   const gb = document.getElementById('get-btn');
   if (fine && !reduce){

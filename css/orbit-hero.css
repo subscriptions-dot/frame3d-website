@@ -96,6 +96,8 @@
   .oh .o-hint{top:auto; bottom:calc(env(safe-area-inset-bottom,0px) + 182px); right:auto; left:calc(var(--o-gl) + var(--o-pad))}
   .oh .o-side{left:calc(var(--o-gl) + var(--o-pad)); right:auto; width:auto; bottom:calc(env(safe-area-inset-bottom,0px) + 28px)}
   .oh .o-side h2, .oh .o-side p{display:none}
+  /* phones: no live blur behind the feature card (costly over a WebGL canvas); a denser tint instead */
+  .oh .o-pop{-webkit-backdrop-filter:none; backdrop-filter:none; background:linear-gradient(180deg, rgba(60,75,170,.82), rgba(22,30,90,.86))}
   .oh .o-cont{left:auto; right:calc(var(--o-gr) + var(--o-pad)); bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}
 }
 .oh.fast .o-h .ln span, .oh.fast .o-fade{transition-duration:.01s; transition-delay:0s}

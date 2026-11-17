@@ -9,7 +9,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
-import { initOrbit } from './orbit-hero.js?v=20261115193311';
+import { initOrbit } from './orbit-hero.js?v=20261117131029';
 
 const F = window.F3D, reduce = F.reduce;
 const $ = s => document.querySelector(s);
@@ -32,7 +32,7 @@ if (window.Lenis && (!reduce || touchDev)){
   gsap.ticker.lagSmoothing(0);
   lenis.stop(); F.lenis = lenis;
 }
-const BUILD = '20261115193311';
+const BUILD = '20261117131029';
 const scrollToEl = (t, dur = 1.6) => lenis ? lenis.scrollTo(t, { duration: dur, easing: easeIO }) : (typeof t === 'number' ? scrollTo(0, t) : t.scrollIntoView());
 document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => { const t = document.querySelector(a.getAttribute('href')); if (t){ e.preventDefault(); scrollToEl(t); } }));
 
@@ -47,7 +47,9 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPrefer
 renderer.setPixelRatio(PR); renderer.setSize(innerWidth, innerHeight, false);
 renderer.toneMapping = THREE.NoToneMapping; renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-const GROUND = new THREE.Color('#EEF1F5'), NIGHT = new THREE.Color('#05060B'), clearCol = GROUND.clone();
+const GROUND_LIGHT = '#EEF1F5', GROUND_DARK = '#05060B', themeGround = () => document.documentElement.classList.contains('dark') ? GROUND_DARK : GROUND_LIGHT;
+const GROUND = new THREE.Color(themeGround()), NIGHT = new THREE.Color('#05060B'), clearCol = GROUND.clone();
+addEventListener('f3d-theme', () => GROUND.set(themeGround()));   // the switch in the header
 const views = [];
 function addView(el, scene, camera, update, opts = {}){ const v = { el, scene, camera, update, rect: null, visible: false, ready: true, ...opts }; views.push(v); return v; }
 class ViewsPass extends Pass {
@@ -93,6 +95,9 @@ const grain = new ShaderPass({
       float l = dot(c.rgb, vec3(.299,.587,.114)); c.rgb += n * uAmt * (1. - l * .6) + (h(gl_FragCoord.yx * 1.7) - .5) / 255.; gl_FragColor = c; }`
 });
 composer.addPass(grain);
+// Phones: no film grain (invisible at that size, a full-screen pass every frame) and a quarter-size bloom.
+const BLOOM_DIV = mobile ? 4 : 2;
+if (mobile){ grain.enabled = false; bloom.setSize(innerWidth / BLOOM_DIV, innerHeight / BLOOM_DIV); }
 
 /* ---------------- loading ---------------- */
 const manager = new THREE.LoadingManager();
@@ -101,23 +106,41 @@ manager.onProgress = (u, done, total) => { target = done / total; };
 const loTick = () => { shown += (target - shown) * .12; loN.textContent = Math.round(shown * 100); loBar.style.transform = `scaleX(${shown})`; };
 gsap.ticker.add(loTick);
 let finished = false;
+// Shader warm-up, one scene per idle slot after the page is up (it used to block the loader for seconds on phones).
+const idle = f => window.requestIdleCallback ? requestIdleCallback(f, { timeout: 500 }) : setTimeout(f, 60);
+function warmLater(){
+  const jobs = [() => { try { renderTunnel(screenRT); } catch (e){ console.warn(e); } }, () => warm(tunScene, tunCam), () => warm(tunLogo, tunCam)];
+  views.forEach(v => { jobs.push(() => warm(v.scene, v.camera)); if (v.after) jobs.push(() => warm(v.after, v.camera)); });
+  const next = () => { const j = jobs.shift(); if (!j) return; j(); idle(next); };
+  idle(next);
+}
 function finishLoader(){
   if (finished) return; finished = true; target = 1;
   setTimeout(() => {
     gsap.ticker.remove(loTick); loN.textContent = '100'; loBar.style.transform = 'scaleX(1)';
-    // compile every shader and upload the corridor once now, so nothing hitches when a section first appears
-    views.forEach(v => { warm(v.scene, v.camera); if (v.after) warm(v.after, v.camera); }); warm(tunScene, tunCam); warm(tunLogo, tunCam); try { renderTunnel(screenRT); } catch (e){ console.warn(e); }
     $('#loader').classList.add('done'); lenis && lenis.start(); scrollTo(0, 0);
     setTimeout(() => orbit.start(), 350);
-    setTimeout(() => loadShatter(), 600);   // the two heavy models (4 MB) come in behind the banner
+    // the two heavy models: desktop fetches them behind the banner; phones only when the monitor section gets close
+    if (!mobile){ setTimeout(() => loadShatter(), 600); setTimeout(loadDeferred, 2500); }
+    else {   // an IntersectionObserver, not a ScrollTrigger: a trigger created this late and killing itself broke ScrollTrigger on fast jumps
+      const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)){ io.disconnect(); loadShatter(); loadDeferred(); } }, { rootMargin: '150% 0px 150% 0px' });
+      io.observe($('#dive-stage'));
+    }
     setTimeout(() => $('#loader').remove(), 1300);
     ScrollTrigger.refresh();
-  }, 450);
+    setTimeout(warmLater, 1600);   // after the banner intro has started
+  }, 200);
 }
-manager.onLoad = finishLoader;
-setTimeout(finishLoader, 9000);
+// The loader no longer waits for every picture: it lifts once the fonts are in (2.5 s at most) and the
+// textures keep streaming in behind the page. Each 3D view waits for its own pictures.
+Promise.all([document.fonts ? document.fonts.ready : 0, new Promise(r => setTimeout(r, 500))]).then(finishLoader);
+setTimeout(finishLoader, 2500);
 const texLoader = new THREE.TextureLoader(manager), lazyGltf = new GLTFLoader();
 const tex = url => { const t = texLoader.load(url); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; };
+// A texture whose picture is fetched later (loadDeferred): the material and its shader exist from the start, the image fills in.
+const deferred = [], imgLoader = new THREE.ImageLoader();
+const texLater = url => { const t = new THREE.Texture(); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; deferred.push([t, url]); return t; };
+function loadDeferred(){ deferred.splice(0).forEach(([t, u]) => imgLoader.load(u, img => { t.image = img; t.needsUpdate = true; })); }
 const pmrem = new THREE.PMREMGenerator(renderer);
 // Upload every texture and shader of a scene once, off screen, so the first time a section scrolls in it does not stall.
 const warmRT = new THREE.WebGLRenderTarget(64, 64);
@@ -181,7 +204,7 @@ if (!reduce) ScrollTrigger.create({ trigger: '#st-h', start: 'top bottom', end: 
   const q = 1 - ease(s.progress); stWords.forEach(w => w.style.transform = `translate3d(${w.dataset.dir * q * 28}vw,0,0)`);
 }});
 
-const lounge = tex('assets/images/lounge.webp'), aurora = tex('assets/images/aurora.webp');
+const lounge = tex(mobile ? 'assets/images/lounge_m.webp' : 'assets/images/lounge.webp'), aurora = tex(mobile ? 'assets/images/aurora_m.webp' : 'assets/images/aurora.webp');   // phones: 960 px copies
 const reelU = {
   uTex: { value: lounge }, uTex2: { value: aurora }, uMix: { value: 0 }, uAspect: { value: 16 / 9 },
   uBox: { value: new THREE.Vector4(0, 0, 100, 100) }, uView: { value: new THREE.Vector2(innerWidth, innerHeight) },
@@ -323,13 +346,14 @@ glowVox.forEach((v, i) => { voxGlow.setMatrixAt(i, _m.compose(_v.set(v.x, v.y, v
 F.dbg.vox = { voxDark, voxGlow, beams, tunScene };
 // pages on the walls: the site's own pictures hang along both sides, so the corridor reads as "inside the web"
 {
-  const pics = ['assets/images/car.webp', 'assets/images/galaxy.webp', 'assets/images/lounge.webp', 'assets/images/games.webp', 'assets/images/addons.webp', 'assets/images/voice.webp', 'assets/images/aurora.webp', 'assets/images/reef.webp'];
+  const pics = mobile ? ['assets/images/car_m.webp', 'assets/images/galaxy_m.webp', 'assets/images/lounge_m.webp', 'assets/images/games_m.webp', 'assets/images/addons_m.webp', 'assets/images/voice_m.webp', 'assets/images/aurora_m.webp', 'assets/images/reef_m.webp']
+    : ['assets/images/car.webp', 'assets/images/galaxy.webp', 'assets/images/lounge.webp', 'assets/images/games.webp', 'assets/images/addons.webp', 'assets/images/voice.webp', 'assets/images/aurora.webp', 'assets/images/reef.webp'];
   const pg = new THREE.PlaneGeometry(1, 1), PER = mobile ? 2 : 3, N = pics.length * PER, step = TUN.L / N;
   const frames = new THREE.InstancedMesh(pg, streamed(new THREE.MeshBasicMaterial({ color: new THREE.Color('#6E7BFF').multiplyScalar(1.5), toneMapped: false })), N);
   frames.frustumCulled = false; tunScene.add(frames);
   const _e = new THREE.Euler(); let n = 0;
   pics.forEach((u, pi) => {
-    const im = new THREE.InstancedMesh(pg, streamed(new THREE.MeshBasicMaterial({ map: tex(u), toneMapped: false })), PER);
+    const im = new THREE.InstancedMesh(pg, streamed(new THREE.MeshBasicMaterial({ map: texLater(u), toneMapped: false })), PER);
     im.frustumCulled = false; tunScene.add(im);
     for (let k = 0; k < PER; k++, n++){
       const slot = (k * pics.length + pi), side = slot % 2 ? 1 : -1, z = slot * step + rnd(-.4, .4), h = rnd(.95, 1.35), w = h * 1.5, y = rnd(-.3, .3);
@@ -700,11 +724,6 @@ ribbon($('[data-ribbon="a"]'), (w, h, host) => {
 });
 // b: one calm arc from the left edge to the right edge
 ribbon($('[data-ribbon="b"]'), (w, h) => [[-120, h * .82], [w * .22, h * .55], [w * .48, h * .2], [w * .78, h * .2], [w + 120, h * .42]]);
-const loopI = $('#loop-i'); let looping = false;
-ScrollTrigger.create({ trigger: '#loopbar', start: 'top bottom', end: 'bottom bottom', scrub: true, onUpdate: s => {
-  loopI.style.transform = `scaleX(${s.progress})`;
-  if (s.progress > .985 && !looping){ looping = true; setTimeout(() => { scrollToEl(0, 2.2); setTimeout(() => looping = false, 2600); }, 300); }
-}});
 
 /* ---------------- WORKS: the six photos are drawn in WebGL and bend with scroll speed ----------------
    Lusion-style "wheel": the faster you scroll, the more the cards curve as if wrapped on a drum: points far
@@ -716,8 +735,9 @@ ScrollTrigger.create({ trigger: '#loopbar', start: 'top bottom', end: 'bottom bo
     const img = el.querySelector('img');
     const u = { uTex: { value: null }, uImg: { value: new THREE.Vector2(16, 11) }, uPos: { value: new THREE.Vector2() }, uSize: { value: new THREE.Vector2(1, 1) },
       uScreen: { value: new THREE.Vector2(1, 1) }, uVel: { value: 0 }, uReveal: { value: 1 }, uZoom: { value: 1 }, uR: { value: 18 } };
-    u.uTex.value = texLoader.load(img.getAttribute('src'), t => u.uImg.value.set(t.image.width, t.image.height));
-    u.uTex.value.colorSpace = THREE.SRGBColorSpace; u.uTex.value.anisotropy = 4;
+    const tx = new THREE.Texture(); tx.colorSpace = THREE.SRGBColorSpace; tx.anisotropy = 4; u.uTex.value = tx;
+    const load = () => imgLoader.load((mobile && img.dataset.m) || img.getAttribute('src'), im => {
+      tx.image = im; tx.needsUpdate = true; u.uImg.value.set(im.width, im.height); card.ready = true; el.classList.add('gl'); });
     const m = new THREE.ShaderMaterial({ uniforms: u, transparent: true, depthTest: false, depthWrite: false, toneMapped: false,
       vertexShader: `uniform vec2 uPos, uSize, uScreen; uniform float uVel; varying vec2 vL;
         void main(){
@@ -745,7 +765,8 @@ ScrollTrigger.create({ trigger: '#loopbar', start: 'top bottom', end: 'bottom bo
           gl_FragColor = vec4(texture2D(uTex, uv).rgb, a);
         }` });
     const mesh = new THREE.Mesh(geo, m); mesh.frustumCulled = false; wScene.add(mesh);
-    return { el, u, mesh };
+    const card = { el, u, mesh, load, asked: false, ready: false };
+    return card;
   });
   // spring: the curve builds while you scroll, then settles back with a soft overshoot (not an instant snap)
   let vel = 0, vv = 0, lastT = performance.now();
@@ -759,7 +780,8 @@ ScrollTrigger.create({ trigger: '#loopbar', start: 'top bottom', end: 'bottom bo
     vv += ((target - vel) * 38 - vv * 10) * dt; vel += vv * dt;
     if (reduce) vel = 0;
     for (const c of cards){
-      const r = c.el.getBoundingClientRect(), on = r.bottom > -120 && r.top < H + 120;
+      const r = c.el.getBoundingClientRect(), on = c.ready && r.bottom > -120 && r.top < H + 120;
+      if (!c.asked && r.top < H * 3){ c.asked = true; c.load(); }   // lazy: fetch when two screens away
       c.mesh.visible = on; if (!on) continue;
       const st = c.el._gl || { reveal: 1, zoom: 1 };
       c.u.uPos.value.set(r.left, r.top); c.u.uSize.value.set(r.width, r.height); c.u.uScreen.value.set(W, H);
@@ -803,10 +825,11 @@ let qLevel = 0, slowN = 0, sampN = 0;
 function adapt(dt){
   if (!finished || qLevel >= 2 || document.hidden) return;
   sampN++; if (dt > 1 / 40) slowN++;
-  if (sampN < 90) return;
-  if (slowN > 45){
+  const SAMP = mobile ? 45 : 90;
+  if (sampN < SAMP) return;
+  if (slowN > SAMP / 2){
     qLevel++;
-    if (qLevel === 1){ if (smaa) smaa.enabled = false; PR = 1; renderer.setPixelRatio(1); composer.setPixelRatio(1); composer.setSize(innerWidth, innerHeight);
+    if (qLevel === 1){ if (smaa) smaa.enabled = false; PR = 1; renderer.setPixelRatio(1); composer.setPixelRatio(1); composer.setSize(innerWidth, innerHeight); bloom.setSize(innerWidth / BLOOM_DIV, innerHeight / BLOOM_DIV);
       views.forEach(v => v.scene.traverse(o => { const u = o.material && o.material.uniforms && o.material.uniforms.uR; if (u && u.r != null) u.value = u.r; })); }
     else { bloom.enabled = false; grain.enabled = false; }
   }
@@ -814,5 +837,5 @@ function adapt(dt){
 }
 // Resize the GL buffers at once when the width changes; height-only changes (phone address bar) wait until scrolling settles.
 let gw = innerWidth, gTo = 0;
-const glSize = () => { renderer.setSize(innerWidth, innerHeight, false); composer.setSize(innerWidth, innerHeight); bloom.setSize(innerWidth / 2, innerHeight / 2); };
+const glSize = () => { renderer.setSize(innerWidth, innerHeight, false); composer.setSize(innerWidth, innerHeight); bloom.setSize(innerWidth / BLOOM_DIV, innerHeight / BLOOM_DIV); };
 addEventListener('resize', () => { clearTimeout(gTo); if (innerWidth !== gw){ gw = innerWidth; glSize(); } else gTo = setTimeout(glSize, 400); });

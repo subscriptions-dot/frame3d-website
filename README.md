@@ -34,7 +34,7 @@ footer update together. Anything still a placeholder shows a small yellow **plac
 Also marked with a placeholder tag in the page text (edit them in `tools/build_pages.py`):
 - FAQ: the list of supported headsets, and the Meta Store answer.
 - Help: "Something else" in Fix a problem.
-- Features: the three review cards. Put in **real** quotes only, with the person's OK.
+- Features: reviews. The section is hidden until `REVIEWS` in `tools/build_pages.py` has **real** quotes, each with the person's OK.
 
 ## Folder layout (source, `software/frame3d-website/`)
 
