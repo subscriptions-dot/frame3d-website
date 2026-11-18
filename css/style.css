@@ -208,7 +208,7 @@ main{overflow-x:clip}
 @media (hover:hover){ .work:hover h3 .t{color:transparent} }
 .work:focus-visible h3 .t{color:transparent}
 /* like the reference: tag line + big title only; the sentence stays for screen readers */
-.work p{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.work p{margin:10px 0 0; max-width:46ch; font-size:clamp(15px,1.05vw,17px); line-height:1.5; color:var(--ink-2)}
 .work p b{font-weight:inherit; color:inherit; transition:color .5s var(--e1)}
 @media (hover:hover){ .work:hover p b{color:var(--blue)} }
 .work .img::after{content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at var(--gx,50%) var(--gy,50%), rgba(255,255,255,.22), transparent 55%); opacity:0; transition:opacity .5s var(--e1)}
