@@ -221,6 +221,13 @@ main{overflow-x:clip}
 
 /* numbers */
 .numbers{position:relative; padding-block:clamp(80px,10vw,150px)}
+.s3{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; counter-reset:none}
+.s3 li{background:var(--paper); border-radius:24px; padding:26px; display:grid; gap:14px; align-content:start; min-width:0}
+.s3 h3{margin:18px 0 0; font-family:var(--display); font-weight:400; font-size:clamp(26px, 2.4vw, 38px); letter-spacing:-.02em; line-height:1.05}
+.s3 p{margin:0; color:var(--ink-2); font-size:15px; line-height:1.55}
+.s3 b{font-weight:600; color:var(--ink)} .s3 a{color:inherit; text-decoration:underline; text-underline-offset:3px}
+.steps3{padding-block:clamp(60px, 9vw, 140px) 0}
+@media (max-width:860px){ .s3{grid-template-columns:minmax(0,1fr)} }
 .stats{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:14px}
 .stat{background:var(--paper); border-radius:24px; padding:26px; display:grid; gap:40px; align-content:space-between; min-height:250px}
 .stat .n{font-family:var(--display); font-weight:200; font-size:clamp(56px, 6.4vw, 104px); line-height:.9; letter-spacing:-.05em; display:flex; align-items:baseline; font-variant-numeric:tabular-nums}
