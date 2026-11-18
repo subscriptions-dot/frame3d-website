@@ -597,3 +597,10 @@ footer{position:relative; z-index:3; background:var(--paper); color:var(--ink); 
 /* Features: the app's real home screen */
 .v-home{position:relative; width:100%; max-width:100%; aspect-ratio:16/10; border-radius:16px; overflow:hidden; box-shadow:0 30px 80px -30px rgba(40,60,200,.55), 0 0 0 1px rgba(255,255,255,.08)}
 .v-home img{width:100%; height:100%; object-fit:cover; display:block}
+
+/* Help: the app's first-run tour */
+.tour{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px; margin:18px 0 8px}
+.tour figure{margin:0; display:grid; gap:10px; min-width:0}
+.tour img{width:100%; max-width:100%; height:auto; aspect-ratio:16/9; border-radius:14px; display:block; box-shadow:0 20px 50px -24px rgba(40,60,200,.5), 0 0 0 1px rgba(255,255,255,.08)}
+.tour figcaption{font-size:14px; line-height:1.5; opacity:.85}
+@media (max-width:640px){ .tour{grid-template-columns:minmax(0,1fr)} }
