@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
-<link rel="stylesheet" href="css/pages.css?v=20261118175746">
+<link rel="stylesheet" href="css/pages.css?v=20261118180227">
 </head>
 <body>
 <script>(function(){ var r = document.documentElement, t = null; r.classList.add('js'); try { t = localStorage.getItem('f3d-theme'); } catch (e){} if (t !== 'light') r.classList.add('dark'); })();   // dark unless the visitor chose light (same key as the home page)</script>
@@ -115,8 +115,8 @@
     if (stage) addEventListener('pointermove', e => { stage.style.setProperty('--px', (e.clientX / innerWidth * 2 - 1).toFixed(3)); stage.style.setProperty('--py', (e.clientY / innerHeight * 2 - 1).toFixed(3)); }, {passive: true});
   }
 
-  // feature showcases: select on click / arrow keys, move on by themselves (progress bar), pause under the pointer
-  // and off screen; on phones the stage is a swipe carousel and the dots follow it
+  // feature showcases: select on click / arrow keys, move on by themselves (progress bar, keeps running under the pointer),
+  // pause only off screen; on phones the stage is a swipe carousel and the dots follow it
   const narrow = matchMedia('(max-width: 900px)');
   document.querySelectorAll('[data-show]').forEach(sh => {
     const tabs = [...sh.querySelectorAll('.sh-tab')], panes = [...sh.querySelectorAll('.sh-pane')], dots = [...sh.querySelectorAll('.sh-dots i')], stage = sh.querySelector('.sh-stage');
@@ -128,7 +128,6 @@
     tabs.forEach((t, k) => { t.addEventListener('click', () => set(k)); t.addEventListener('keydown', e => { const d = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0; if (d){ e.preventDefault(); set(cur + d); tabs[cur].focus(); } }); });
     dots.forEach((d, k) => d.addEventListener('click', () => set(k, true)));
     sh.addEventListener('animationend', e => { if (e.target.parentElement && e.target.parentElement.classList.contains('bar') && !narrow.matches) set(cur + 1); });
-    sh.addEventListener('pointerenter', () => sh.classList.add('hold')); sh.addEventListener('pointerleave', () => sh.classList.remove('hold'));
     if ('IntersectionObserver' in window) new IntersectionObserver(es => sh.classList.toggle('off', !es[0].isIntersecting), {threshold: .25}).observe(sh);
     let st = 0; stage.addEventListener('scroll', () => { if (!narrow.matches) return; clearTimeout(st); st = setTimeout(() => {
       const mid = stage.scrollLeft + stage.clientWidth / 2; let best = 0, bd = 1e9;

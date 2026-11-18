@@ -9,7 +9,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
-import { initOrbit } from './orbit-hero.js?v=20261118175746';
+import { initOrbit } from './orbit-hero.js?v=20261118180227';
 
 const F = window.F3D, reduce = F.reduce;
 const $ = s => document.querySelector(s);
@@ -32,7 +32,7 @@ if (window.Lenis && (!reduce || touchDev)){
   gsap.ticker.lagSmoothing(0);
   lenis.stop(); F.lenis = lenis;
 }
-const BUILD = '20261118175746';
+const BUILD = '20261118180227';
 const scrollToEl = (t, dur = 1.6) => lenis ? lenis.scrollTo(t, { duration: dur, easing: easeIO }) : (typeof t === 'number' ? scrollTo(0, t) : t.scrollIntoView());
 document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => { const t = document.querySelector(a.getAttribute('href')); if (t){ e.preventDefault(); scrollToEl(t); } }));
 
@@ -247,7 +247,7 @@ const reelView = addView(fullEl, reelScene, new THREE.Camera(), function(t, dt){
   reelMesh.visible = T < innerHeight + H * .3 && T + H > -H * .3;
 });
 ScrollTrigger.create({ trigger: '#reel', start: 'top bottom', end: 'top top', scrub: true, onUpdate: s => reel.p = s.progress });
-const SP = { lounge: { mix: 0, desc: 'A calm sunset lounge with a round sofa and soft light. Your windows float in it while you browse.' }, aurora: { mix: 1, desc: 'An open meadow under the northern lights, with a tree and a far-off castle.' } };
+const SP = { lounge: { mix: 0, desc: 'A calm sunset lounge. Your windows float around you.' }, aurora: { mix: 1, desc: 'A quiet meadow under the northern lights.' } };
 let spaceNow = 'lounge';
 let swapRot = 0;
 function pickSpace(k){ if (k === spaceNow) return; spaceNow = k; swapRot += 180; $('#swap').style.setProperty('--rot', swapRot + 'deg'); reelUI.dataset.space = k; $('#sp-num').textContent = k === 'lounge' ? '01' : '02'; $('#sp-name').textContent = k === 'lounge' ? 'Lounge' : 'Aurora';
