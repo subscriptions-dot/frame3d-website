@@ -604,3 +604,7 @@ footer{position:relative; z-index:3; background:var(--paper); color:var(--ink); 
 .tour img{width:100%; max-width:100%; height:auto; aspect-ratio:16/9; border-radius:14px; display:block; box-shadow:0 20px 50px -24px rgba(40,60,200,.5), 0 0 0 1px rgba(255,255,255,.08)}
 .tour figcaption{font-size:14px; line-height:1.5; opacity:.85}
 @media (max-width:640px){ .tour{grid-template-columns:minmax(0,1fr)} }
+
+/* Get started: "Next" link at the end of each step */
+.next{display:inline-flex; align-items:center; gap:8px; margin-top:6px; padding:10px 18px; border-radius:999px; font-weight:600; font-size:14px; text-decoration:none!important; color:#fff!important; background:linear-gradient(135deg, #4C7BF0, #8B3DDF)}
+.next:hover{filter:brightness(1.12)}

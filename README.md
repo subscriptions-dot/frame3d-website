@@ -8,10 +8,11 @@ no build step for visitors, nothing to install. Live at
 
 | Page | File | What is on it |
 |---|---|---|
-| Home | `index.html` | 3D orbit banner, the idea, Spaces card, features grid, numbers, screen dive, Quest finale, footer |
+| Home | `index.html` | 3D orbit banner, three steps, the idea + Spaces card, features grid, "Will it work for me?", numbers, screen dive, Quest finale, footer |
 | Features | `features.html` | Every feature in groups (3D & video, browsing, make it yours, play & control, privacy) + review cards |
 | FAQ | `faq.html` | Short answers (headsets, price, account, privacy, VR video, DRM, add-ons, updates) |
-| Help | `help.html` | Install on Quest (sideload), fixes for common problems, how to report a bug |
+| Get started | `start.html` | Install on Quest (sideload), the app's first-run tour, controller buttons, first 3D. Every "Get Frame3D" button lands here |
+| Help | `help.html` | Fixes for common problems, how to report a bug |
 | Contact | `contact.html` | Support / bugs / press, community links |
 | Privacy & legal | `legal.html` | Privacy policy, this website, credits & licences, trademarks |
 | Not found | `404.html` | Shown by GitHub Pages for any wrong address |
@@ -41,7 +42,7 @@ Also marked with a placeholder tag in the page text (edit them in `tools/build_p
 | Path | What it is |
 |---|---|
 | `site/index.html` | Home page, everything inline (Artifact-style fragment: no doctype/head tags) |
-| `site/{features,faq,help,contact,legal,404}.html` | Reading pages. **Generated**: edit `tools/build_pages.py`, not these files |
+| `site/{features,start,faq,help,contact,legal,404}.html` | Reading pages. **Generated**: edit `tools/build_pages.py`, not these files |
 | `site/assets/pages.css` | Shared style of the reading pages |
 | `site/assets/orbit_hero.{js,css}` | Top banner: glass mark, orbit rings, six feature planets |
 | `site/assets/*.webp`, `*.gltf.json`, `og.png` | Pictures, 3D models, share picture |

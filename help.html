@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Frame3D Help</title>
-<meta name="description" content="Install Frame3D on Meta Quest, fix common problems and report bugs.">
+<meta name="description" content="Fix common Frame3D problems and report bugs.">
 <link rel="canonical" href="https://subscriptions-dot.github.io/frame3d-website/help.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Frame3D">
 <meta property="og:title" content="Frame3D Help">
-<meta property="og:description" content="Install Frame3D on Meta Quest, fix common problems and report bugs.">
+<meta property="og:description" content="Fix common Frame3D problems and report bugs.">
 <meta property="og:url" content="https://subscriptions-dot.github.io/frame3d-website/help.html">
 <meta property="og:image" content="https://subscriptions-dot.github.io/frame3d-website/og.png">
 <meta property="og:image:width" content="1200">
@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
-<link rel="stylesheet" href="css/pages.css?v=20261118181128">
+<link rel="stylesheet" href="css/pages.css?v=20261120121101">
 </head>
 <body>
 <script>(function(){ var r = document.documentElement, t = null; r.classList.add('js'); try { t = localStorage.getItem('f3d-theme'); } catch (e){} if (t !== 'light') r.classList.add('dark'); })();   // dark unless the visitor chose light (same key as the home page)</script>
@@ -28,50 +28,14 @@
 <div class="cursor" aria-hidden="true"><i class="eye r"></i><i class="eye c"></i></div>
 <header class="top wrap" id="top">
   <a class="brand" href="index.html" aria-label="Frame3D home"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="l1" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#2F80FF"/><stop offset="1" stop-color="#5D58FB"/></linearGradient><linearGradient id="l2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#63A2FF"/><stop offset=".55" stop-color="#6A5CFA"/><stop offset="1" stop-color="#8B3DDF"/></linearGradient></defs><rect x="12" y="38" width="68" height="68" rx="20" fill="none" stroke="url(#l1)" stroke-width="12"/><rect x="46" y="18" width="52" height="52" rx="16" fill="url(#l2)"/></svg>Frame3D</a>
-  <nav class="nav" aria-label="Pages"><a href="features.html">Features</a><a href="faq.html">FAQ</a><a href="help.html" aria-current="page">Help</a><a href="contact.html">Contact</a><button class="theme-sw" id="theme-btn" type="button" role="switch" aria-checked="true" aria-label="Dark mode"><span class="ts-k"><svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span></button><a class="get" href="help.html#install">Get Frame3D</a></nav>
+  <nav class="nav" aria-label="Pages"><a href="features.html">Features</a><a href="start.html">Get started</a><a href="faq.html">FAQ</a><a href="help.html" aria-current="page">Help</a><a href="contact.html">Contact</a><button class="theme-sw" id="theme-btn" type="button" role="switch" aria-checked="true" aria-label="Dark mode"><span class="ts-k"><svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span></button><a class="get" href="start.html">Get Frame3D</a></nav>
 </header>
 <main class="wrap">
   <section class="hero"><img class="hero-bg" src="assets/images/orbit_bg.webp" alt="" aria-hidden="true" decoding="async">
-    <div class="kicker"><span class="eyes" aria-hidden="true"><i></i><i></i></span>Help & install</div>
-    <h1>Get <em>started.</em></h1>
-    <p class="lead">Download Frame3D, install it on your Quest in about ten minutes, and start exploring. Fixes for common problems are below.</p>
-    <nav class="toc" aria-label="On this page"><a href="#install">Install</a><a href="#first-steps">First steps</a><a href="#fix">Fix a problem</a><a href="#report">Report a bug</a></nav>
-  </section>
-  <section class="panel" id="install"><h2>Install on your Quest</h2>
-    <div class="dl"><a class="btn-get" href="https://github.com/subscriptions-dot/frame3d-releases/releases/latest/download/Frame3D-quest.apk" download>Download for Meta Quest <span aria-hidden="true">↓</span></a>
-      <p class="dl-note">Frame3D-quest.apk · always the newest version · <a href="https://github.com/subscriptions-dot/frame3d-releases/releases/latest" target="_blank" rel="noopener">release notes and all files</a></p></div>
-    <p>The GitHub version is installed from a computer (sideloading). You need the headset, a computer and a USB-C cable. You only do the setup once.</p>
-    <ol class="steps">
-      <li><b>Turn on developer mode.</b> In the Meta Horizon app on your phone, open your headset's settings and switch on Developer Mode.</li>
-      <li><b>Connect the headset.</b> Plug the Quest into your computer with a USB-C cable, put it on and allow USB debugging.</li>
-      <li><b>Download the app.</b> From the <a href="https://github.com/subscriptions-dot/frame3d-releases/releases/latest" target="_blank" rel="noopener">latest release</a>, download <code>Frame3D-quest.apk</code> (the button above).</li>
-      <li><b>Install it.</b> Open <a href="https://sidequestvr.com/setup-howto" target="_blank" rel="noopener">SideQuest</a> on the computer and drag the file onto its window. (If you use the command line: <code>adb install -r Frame3D-quest.apk</code>.)</li>
-      <li><b>Open Frame3D.</b> In the headset, open the Library and look under Unknown Sources.</li>
-    </ol>
-    <p>Later updates: the app checks GitHub and offers new versions itself.</p>
-  </section>
-  <section class="panel" id="first-steps"><h2>First steps in the headset</h2>
-    <p>The first time you open Frame3D, a short tour shows you around. Here it is, so you know what to expect.</p>
-    <div class="tour">
-      <figure><img src="assets/images/tour_welcome.webp" width="960" height="540" alt="Frame3D welcome screen: Hey! I'm Frame3D. Browse big. Watch in 3D." loading="lazy" decoding="async"><figcaption><b>Welcome.</b> Press Get started.</figcaption></figure>
-      <figure><img src="assets/images/tour_windows.webp" width="960" height="540" alt="Put your windows anywhere around you: hold the grip on a window and move it" loading="lazy" decoding="async"><figcaption><b>Windows.</b> Hold the grip to move a window. Push the right stick to bring it nearer.</figcaption></figure>
-      <figure><img src="assets/images/tour_controller.webp" width="960" height="540" alt="Your controller: what each Quest controller button does" loading="lazy" decoding="async"><figcaption><b>Controllers.</b> Every button has one job (list below).</figcaption></figure>
-      <figure><img src="assets/images/tour_vr.webp" width="960" height="540" alt="Step into VR sites and games: press Immersive view" loading="lazy" decoding="async"><figcaption><b>VR sites.</b> Press Immersive view and the site opens all around you.</figcaption></figure>
-    </div>
-    <h3>Controller buttons</h3>
-    <div class="tbl"><table>
-      <tr><th>Button</th><th>What it does</th></tr>
-      <tr><td>Trigger, A / X</td><td>Press what you point at</td></tr>
-      <tr><td>Hold A</td><td>Search or type by speaking</td></tr>
-      <tr><td>B / Y / Menu</td><td>Back</td></tr>
-      <tr><td>Grip</td><td>Hold a window and move it</td></tr>
-      <tr><td>Right stick</td><td>Scroll the page</td></tr>
-      <tr><td>Left stick</td><td>Walk; press it for the nav bar</td></tr>
-      <tr><td>Hold Y</td><td>Hide every window, look around</td></tr>
-      <tr><td>Hold Menu</td><td>Bring the windows in front of you</td></tr>
-      <tr><td>Meta button</td><td>The headset's own menu</td></tr>
-    </table></div>
-    <p>Inside a VR site or game, every other button is the game's. Menu leaves immersive view.</p>
+    <div class="kicker"><span class="eyes" aria-hidden="true"><i></i><i></i></span>Help</div>
+    <h1>Fix a <em>problem.</em></h1>
+    <p class="lead">Fixes for common problems, and how to tell us when something breaks. New here? Start with <a href="start.html">Get started</a>.</p>
+    <nav class="toc" aria-label="On this page"><a href="start.html">Get started</a><a href="#fix">Fix a problem</a><a href="#report">Report a bug</a></nav>
   </section>
   <section class="panel" id="fix"><h2>Fix a problem</h2>
     <details><summary>A photo or video does not turn 3D</summary><div><p>Press the 3D button on that photo or video. Protected (DRM) video cannot be converted. If it still stays flat, close and reopen the tab, then send a report (below).</p></div></details>
@@ -91,7 +55,7 @@
   <div class="f-grid">
     <div><p class="f-lead">The browser built for your headset.</p></div>
     <div><h4>Explore</h4><ul><li><a href="index.html#statement">The idea</a></li><li><a href="index.html#features">What it does</a></li><li><a href="index.html#numbers">Numbers</a></li></ul></div>
-    <div><h4>Pages</h4><ul><li><a href="features.html">Features</a></li><li><a href="faq.html">FAQ</a></li><li><a href="help.html">Help &amp; install</a></li><li><a href="contact.html">Contact</a></li><li><a href="legal.html#privacy">Privacy</a></li></ul></div>
+    <div><h4>Pages</h4><ul><li><a href="features.html">Features</a></li><li><a href="start.html">Get started</a></li><li><a href="faq.html">FAQ</a></li><li><a href="help.html">Help</a></li><li><a href="contact.html">Contact</a></li><li><a href="legal.html#privacy">Privacy</a></li></ul></div>
   </div>
   <div class="wordmark" id="wordmark" role="img" aria-label="Frame3D"><span class="l" style="--i:0" aria-hidden="true"><i>F</i><i>F</i></span><span class="l" style="--i:1" aria-hidden="true"><i>r</i><i>r</i></span><span class="l" style="--i:2" aria-hidden="true"><i>a</i><i>a</i></span><span class="l" style="--i:3" aria-hidden="true"><i>m</i><i>m</i></span><span class="l" style="--i:4" aria-hidden="true"><i>e</i><i>e</i></span><span class="l" style="--i:5" aria-hidden="true"><i>3</i><i>3</i></span><span class="l" style="--i:6" aria-hidden="true"><i>D</i><i>D</i></span></div>
   

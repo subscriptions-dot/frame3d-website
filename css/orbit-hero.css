@@ -49,6 +49,8 @@
 .oh .o-side h2{font-family:"Inter Tight", "Inter", system-ui, sans-serif; font-size:18px; font-weight:600; margin:0 0 8px; letter-spacing:-.01em}
 .oh .o-side h2, .oh .o-side p{text-shadow:0 1px 12px rgba(2,4,16,.85)}
 .oh .o-side .o-trust{margin:-8px 0 16px; font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:var(--o-ink-2); opacity:.8}
+.oh .o-side .o-how{display:block; width:max-content; margin:0 0 14px; font-size:13px; color:var(--o-ink-2); text-decoration:underline; text-underline-offset:3px}
+.oh .o-side .o-how:hover{color:#fff}
 .oh .o-side p{margin:0 0 18px; font-size:13px; color:var(--o-ink-2); line-height:1.55}
 .oh .o-cta{display:inline-flex; align-items:center; gap:10px; background:var(--o-cyan); color:#021018; font-weight:500; font-size:14px; padding:12px 18px; border-radius:6px; transition:transform .5s var(--o-e), box-shadow .5s}
 .oh .o-cta:hover{transform:translateY(-2px); box-shadow:0 10px 30px -8px rgba(76,224,245,.6)}
@@ -96,7 +98,7 @@
   .oh .o-count{top:calc(env(safe-area-inset-top,0px) + 84px)}
   .oh .o-hint{top:auto; bottom:calc(env(safe-area-inset-bottom,0px) + 182px); right:auto; left:calc(var(--o-gl) + var(--o-pad))}
   .oh .o-side{left:calc(var(--o-gl) + var(--o-pad)); right:auto; width:auto; bottom:calc(env(safe-area-inset-bottom,0px) + 28px)}
-  .oh .o-side h2, .oh .o-trust{display:none}
+  .oh .o-side h2, .oh .o-trust, .oh .o-side .o-how{display:none}
   .oh .o-side p{margin:0 0 14px; max-width:34ch; font-size:14px}
   /* phones: no live blur behind the feature card (costly over a WebGL canvas); a denser tint instead */
   .oh .o-pop{-webkit-backdrop-filter:none; backdrop-filter:none; background:linear-gradient(180deg, rgba(60,75,170,.82), rgba(22,30,90,.86))}
