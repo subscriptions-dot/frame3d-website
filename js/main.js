@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -9,7 +10,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
-import { initOrbit } from './orbit-hero.js?v=20261120121101';
+import { initOrbit } from './orbit-hero.js?v=20261120182354';
 
 const F = window.F3D, reduce = F.reduce;
 const $ = s => document.querySelector(s);
@@ -32,7 +33,7 @@ if (window.Lenis && (!reduce || touchDev)){
   gsap.ticker.lagSmoothing(0);
   lenis.stop(); F.lenis = lenis;
 }
-const BUILD = '20261120121101';
+const BUILD = '20261120182354';
 const scrollToEl = (t, dur = 1.6) => lenis ? lenis.scrollTo(t, { duration: dur, easing: easeIO }) : (typeof t === 'number' ? scrollTo(0, t) : t.scrollIntoView());
 document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => { const t = document.querySelector(a.getAttribute('href')); if (t){ e.preventDefault(); scrollToEl(t); } }));
 
@@ -136,6 +137,8 @@ function finishLoader(){
 Promise.all([document.fonts ? document.fonts.ready : 0, new Promise(r => setTimeout(r, 500))]).then(finishLoader);
 setTimeout(finishLoader, 2500);
 const texLoader = new THREE.TextureLoader(manager), lazyGltf = new GLTFLoader();
+// the Quest model is Draco-compressed (1.1 MB -> 0.35 MB); the decoder only downloads when that model loads
+lazyGltf.setDRACOLoader(new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/libs/draco/gltf/'));
 const tex = url => { const t = texLoader.load(url); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; };
 // A texture whose picture is fetched later (loadDeferred): the material and its shader exist from the start, the image fills in.
 const deferred = [], imgLoader = new THREE.ImageLoader();

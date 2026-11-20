@@ -23,10 +23,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.min.js" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500;600&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap">
 <script>try{var t=localStorage.getItem("f3d-theme");if(t==="dark")document.documentElement.classList.add("dark")}catch(e){}</script>
-<link rel="stylesheet" href="css/orbit-hero.css?v=20261120121101">
-<link rel="stylesheet" href="css/style.css?v=20261120121101">
+<link rel="stylesheet" href="css/orbit-hero.css?v=20261120182354">
+<link rel="stylesheet" href="css/style.css?v=20261120182354">
 </head>
 <body>
 <canvas id="gl" aria-hidden="true"></canvas>
@@ -66,7 +67,7 @@
 <div class="menu wrap" id="menu" aria-hidden="true">
   <div class="menu-grid">
     <nav class="menu-col" aria-label="Pages"><span class="mono">Pages</span><ul class="menu-big"><li><a href="#top" style="--i:0"><span class="n">01</span><span class="t">Home</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="features.html" style="--i:1"><span class="n">02</span><span class="t">Features</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="start.html" style="--i:2"><span class="n">03</span><span class="t">Get started</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="faq.html" style="--i:3"><span class="n">04</span><span class="t">FAQ</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="help.html" style="--i:4"><span class="n">05</span><span class="t">Help</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="contact.html" style="--i:5"><span class="n">06</span><span class="t">Contact</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a href="legal.html#privacy" style="--i:6"><span class="n">07</span><span class="t">Privacy</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li></ul></nav>
-    <nav class="menu-col menu-side" aria-label="On this page"><span class="mono">On this page</span><ul class="menu-small"><li><a href="#statement" style="--i:2">The idea</a></li><li><a href="#how" style="--i:3">How it works</a></li><li><a href="#features" style="--i:3">What it does</a></li><li><a href="#fit" style="--i:4">Will it work?</a></li><li><a href="#numbers" style="--i:4">Numbers</a></li><li><a href="#dive-intro" style="--i:5">Out of the frame</a></li><li><a href="#get" style="--i:6">Put it on</a></li></ul>
+    <nav class="menu-col menu-side" aria-label="On this page"><span class="mono">On this page</span><ul class="menu-small"><li><a href="#how" style="--i:2">How it works</a></li><li><a href="#statement" style="--i:3">The idea</a></li><li><a href="#features" style="--i:3">What it does</a></li><li><a href="#numbers" style="--i:4">Numbers</a></li><li><a href="#dive-intro" style="--i:5">Out of the frame</a></li><li><a href="#get" style="--i:6">Put it on</a></li></ul>
       <a class="menu-get" href="start.html" style="--i:8">Get Frame3D <span aria-hidden="true">→</span></a></nav>
   </div>
   <div class="mono plus">Spatial browser for Meta Quest</div>
@@ -180,17 +181,6 @@
   </section>
 
 
-  <section class="fit wrap" id="fit" aria-labelledby="fit-h">
-    <h2 class="fit-h" id="fit-h">Will it work for me?</h2>
-    <ul class="fit-list">
-      <li><span class="mono plus">Headsets</span><b>Quest 3</b><small>Tested. Also installs on Quest 3S, 2 and Pro.</small></li>
-      <li><span class="mono plus">Price</span><b>Free</b><small>The GitHub version costs nothing.</small></li>
-      <li><span class="mono plus">Account</span><b>None</b><small>No sign-up, no cloud, no tracking.</small></li>
-      <li><span class="mono plus">Install</span><b>Once, ~10 min</b><small>From a computer. <a href="start.html">Guide</a></small></li>
-    </ul>
-    <p class="fit-more">More questions? <a href="faq.html">Read the FAQ</a>.</p>
-  </section>
-
   <section class="numbers wrap" id="numbers">
     <div class="sec-head">
       <h2 class="h-xl rl"><span class="line"><span class="li">Measured on Quest 3.</span></span></h2>
@@ -259,12 +249,12 @@
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script type="importmap">
 { "imports": {
-  "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+  "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.min.js",
   "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
 } }
 </script>
-<script src="js/page.js?v=20261120121101"></script>
+<script src="js/page.js?v=20261120182354"></script>
 
-<script type="module" src="js/main.js?v=20261120121101"></script>
+<script type="module" src="js/main.js?v=20261120182354"></script>
 </body>
 </html>
